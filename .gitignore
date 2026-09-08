@@ -1,2 +1,5 @@
 node_modules/
 .env
+login.json
+post.json
+teste.json
