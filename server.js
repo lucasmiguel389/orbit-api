@@ -98,6 +98,31 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Gerar um novo access token usando o refresh token
+app.post('/refresh-token', (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(400).json({ erro: 'Refresh token é obrigatório' });
+  }
+
+  try {
+    // Confere se o refresh token é válido (assinado com o segredo certo, não expirado)
+    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    // Gera um novo access token pro mesmo usuário
+    const novoAccessToken = jwt.sign(
+      { id: payload.id },
+      process.env.JWT_ACCESS_SECRET,
+      { expiresIn: '15m' }
+    );
+
+    res.json({ accessToken: novoAccessToken });
+  } catch (erro) {
+    return res.status(401).json({ erro: 'Refresh token inválido ou expirado' });
+  }
+});
+
 // Criar um post (rota protegida)
 app.post('/posts', verificarToken, async (req, res) => {
   const { content } = req.body;

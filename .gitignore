@@ -3,3 +3,6 @@ node_modules/
 login.json
 post.json
 teste.json
+comment.json
+refresh.json
+token-falso.json
